@@ -49,7 +49,7 @@ object StreamOrchestrator {
     //and put the average of each into a one-row RDD
     val tempAndHourAndDOW = weatherStream.map(_.split(",")).map(v => Array(v(7).toDouble,v(3).toDouble,v(6).toDouble,1))
     val tempAndHourAndDOWObs = tempAndHourAndDOW.count()
-    val tempAndHourAndDOWSum = tempAndHourAndDOW.reduce((a ,b ) => Array(a(0)+b(0)+scala.util.Random.nextFloat - 0.5,a(1)+b(1),a(2)+b(2),a(3)+b(3)))
+    val tempAndHourAndDOWSum = tempAndHourAndDOW.reduce((a ,b ) => Array(a(0)+b(0),a(1)+b(1),a(2)+b(2),a(3)+b(3)))
     val tempAndHourAndDOWAvg = tempAndHourAndDOWSum.map(v => Array(v(0)/v(3),v(1)/v(3),v(2)/v(3)))
 
     //Turn into a temperature and temperature^2 variable for each hour of day, plus a day of week dummy
