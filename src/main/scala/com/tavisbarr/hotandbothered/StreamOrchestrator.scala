@@ -21,10 +21,10 @@ object StreamOrchestrator {
     val ssc = new StreamingContext(conf, Minutes(60))
     val counter = ssc.sparkContext.accumulator(0L, "Counter")
 
-    val consumerKey = "GOCwh678jYFkdzhwCsnm0k5cw"
-    val consumerSecret = "mS4m7yvPkZbBe2G7oV5sYB62wVz5qbuEaThyZyvuJtvPcUjOYb"
-    val accessToken = "742529982296100865-ViWtDejUzeqYHu4NInxAiRyaIR08Vjp"
-    val accessTokenSecret = "RLEx8LBLokp7tVEqmG0wA1CO1UotAMgE3S6vcSpLMZd6w"
+    val consumerKey = Passwords.twitterConsumerKey
+    val consumerSecret = Passwords.twitterConsumerSecret
+    val accessToken = Passwords.twitterAccessToken
+    val accessTokenSecret = Passwords.twitterAccessTokenSecret
     
     val twitter = new TwitterFactory().getInstance()
     twitter.setOAuthConsumer(consumerKey, consumerSecret)

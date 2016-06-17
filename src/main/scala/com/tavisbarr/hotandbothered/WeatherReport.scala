@@ -27,15 +27,13 @@ class WeatherReport {
   var windSpeed : Double = -1
   var latitude : Double = 361
   var longitude: Double = 361
-   
-  //http://api.openweathermap.org/data/2.5/weather?q=Chicago&APPID=613c56100f36144b1bb9de7183572416
  
-  
+  //Sample response:   
   //{"coord":{"lon":-87.65,"lat":41.85},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01d"}],"base":"cmc stations","main":{"temp":291.87,"pressure":1019,"humidity":44,"temp_min":290.37,"temp_max":295.26},"wind":{"speed":5.14,"deg":52,"gust":7.71},"clouds":{"all":0},"dt":1465745737,"sys":{"type":3,"id":41324,"message":0.1443,"country":"US","sunrise":1465726498,"sunset":1465781199},"id":4887398,"name":"Chicago","cod":200}
   
   def fetchDataFromLocationToString(locationString : String) : String = {
     location = locationString
-    val url = "http://api.openweathermap.org/data/2.5/weather?q=" + location + "&APPID=613c56100f36144b1bb9de7183572416"
+    val url = "http://api.openweathermap.org/data/2.5/weather?q=" + location + "&APPID=" + Passwords.openWeatherAppID
     val result = scala.io.Source.fromURL(url).mkString
     //println(result)
     result
