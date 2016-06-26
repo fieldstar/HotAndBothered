@@ -6,6 +6,7 @@ import org.apache.spark.SparkConf
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.streaming.receiver.Receiver
+import java.util.Date
 
 class WeatherReceiver extends Receiver[String](StorageLevel.MEMORY_AND_DISK_2)  {
 
@@ -26,14 +27,27 @@ class WeatherReceiver extends Receiver[String](StorageLevel.MEMORY_AND_DISK_2)  
 
         val currentWeather  = new WeatherReport()
     
+        var lastCheckTime = new Date().getTime
         try {
         while(!isStopped ) {
-          val weatherJSON = currentWeather.fetchDataFromLocationToString("Chicago")
-          currentWeather.addTimestamp()
-          currentWeather.parseJSON(weatherJSON)
-          val currentWeatherCSV = currentWeather.fetchTemparatureList()
-          store(currentWeatherCSV)
-          Thread.sleep(1200000)
+          var currentTime = new Date().getTime
+            if ( currentTime - lastCheckTime > 120000 ) {
+            var weatherJSON : String = null;
+            try {
+              weatherJSON = currentWeather.fetchDataFromLocationToString("Chicago")
+            } catch {
+             case t: Throwable =>
+               println("Error receiving data at " + new Date() + ": " + t.getMessage)
+            }
+            if ( weatherJSON != null ) {
+              currentWeather.addTimestamp()
+              currentWeather.parseJSON(weatherJSON)
+              //val currentWeatherCSV = currentWeather.fetchTemparatureList()
+              store(currentWeather.fetchTemparatureList())              
+              println("Weather checked at " + new Date() + ": " + weatherJSON)
+            }
+            lastCheckTime = currentTime
+          }
         }
           
         } catch {

@@ -27,7 +27,7 @@ class WeatherReport {
   var windSpeed : Double = -1
   var latitude : Double = 361
   var longitude: Double = 361
- 
+  
   //Sample response:   
   //{"coord":{"lon":-87.65,"lat":41.85},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01d"}],"base":"cmc stations","main":{"temp":291.87,"pressure":1019,"humidity":44,"temp_min":290.37,"temp_max":295.26},"wind":{"speed":5.14,"deg":52,"gust":7.71},"clouds":{"all":0},"dt":1465745737,"sys":{"type":3,"id":41324,"message":0.1443,"country":"US","sunrise":1465726498,"sunset":1465781199},"id":4887398,"name":"Chicago","cod":200}
   
@@ -38,11 +38,29 @@ class WeatherReport {
     //println(result)
     result
   }
+    
+  def parseJSON(rawJSON : String) {
+    
+    val jsonMap = JSON.parseFull(rawJSON)
+    val tempKelvin = jsonMap.get.asInstanceOf[Map[String,Any]]("main").asInstanceOf[Map[String,Any]]("temp").asInstanceOf[Double]
+    this.tempCelsius = tempKelvin - 273.15
+    tempFarenheit = tempCelsius*1.8 + 32
+    val lowTempKelvin = jsonMap.get.asInstanceOf[Map[String,Any]]("main").asInstanceOf[Map[String,Any]]("temp_min").asInstanceOf[Double]
+    lowTempCelsius = lowTempKelvin - 273.15
+    lowTempFarenheit = lowTempCelsius*1.8 + 32
+    val highTempKelvin = jsonMap.get.asInstanceOf[Map[String,Any]]("main").asInstanceOf[Map[String,Any]]("temp_max").asInstanceOf[Double]
+    highTempCelsius = highTempKelvin - 273.15
+    highTempFarenheit = highTempCelsius*1.8 + 32
+    weatherDescription = jsonMap.get.asInstanceOf[Map[String,Any]]("weather").asInstanceOf[List[Map[String,Any]]](0).asInstanceOf[Map[String,Any]]("description").asInstanceOf[String]
+    windSpeed = jsonMap.get.asInstanceOf[Map[String,Any]]("wind").asInstanceOf[Map[String,Any]]("speed").asInstanceOf[Double]
+    latitude = jsonMap.get.asInstanceOf[Map[String,Any]]("coord").asInstanceOf[Map[String,Any]]("lat").asInstanceOf[Double]
+    longitude = jsonMap.get.asInstanceOf[Map[String,Any]]("coord").asInstanceOf[Map[String,Any]]("lon").asInstanceOf[Double]
+        
+  }
   
-  def addTimestamp() {
+    def addTimestamp() {
     val today = Calendar.getInstance.getTime
      
-// create the date/time formatters
     val yearFormat = new SimpleDateFormat("yyyy")
     val monthFormat = new SimpleDateFormat("MM")
     val dayFormat = new SimpleDateFormat("dd")
@@ -66,33 +84,6 @@ class WeatherReport {
       case "Sat" => 6
       case "Sun" => 7
     }
-  }
-  
-  def parseJSON(rawJSON : String) {
-    
-    val jsonMap = JSON.parseFull(rawJSON)
-    val tempKelvin = jsonMap.get.asInstanceOf[Map[String,Any]]("main").asInstanceOf[Map[String,Any]]("temp").asInstanceOf[Double]
-    this.tempCelsius = tempKelvin - 273.15
-    tempFarenheit = tempCelsius*1.8 + 32
-    val lowTempKelvin = jsonMap.get.asInstanceOf[Map[String,Any]]("main").asInstanceOf[Map[String,Any]]("temp_min").asInstanceOf[Double]
-    lowTempCelsius = lowTempKelvin - 273.15
-    lowTempFarenheit = lowTempCelsius*1.8 + 32
-    val highTempKelvin = jsonMap.get.asInstanceOf[Map[String,Any]]("main").asInstanceOf[Map[String,Any]]("temp_max").asInstanceOf[Double]
-    highTempCelsius = highTempKelvin - 273.15
-    highTempFarenheit = highTempCelsius*1.8 + 32
-    weatherDescription = jsonMap.get.asInstanceOf[Map[String,Any]]("weather").asInstanceOf[List[Map[String,Any]]](0).asInstanceOf[Map[String,Any]]("description").asInstanceOf[String]
-    windSpeed = jsonMap.get.asInstanceOf[Map[String,Any]]("wind").asInstanceOf[Map[String,Any]]("speed").asInstanceOf[Double]
-    latitude = jsonMap.get.asInstanceOf[Map[String,Any]]("coord").asInstanceOf[Map[String,Any]]("lat").asInstanceOf[Double]
-    longitude = jsonMap.get.asInstanceOf[Map[String,Any]]("coord").asInstanceOf[Map[String,Any]]("lon").asInstanceOf[Double]
-    
-    /*println("Result: location: " + location + ", tempCelsuis: " + tempCelsius 
-        + ", tempFarenheit: " + tempFarenheit + ", weatherDescription: " + weatherDescription + ", lowTempCelsius: "
-        + lowTempCelsius + ", lowTempFarenheit: " + lowTempFarenheit + ", highTempCelsius: " + highTempCelsius
-        + "highTempFarenheit: " + highTempFarenheit + ", windSpeed: " + windSpeed + ", latitude: " + latitude 
-        + ", longitude: " + longitude)*/
-    
-    
-    
   }
   
   def fetchTemparatureList(): String = {

@@ -14,15 +14,13 @@
       <comments>A business-friendly OSS license</comments>
     </license>
   </licenses>
-   -->
-
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <encoding>UTF-8</encoding>
-    <scala.tools.version>2.10</scala.tools.version>
-    <scala.version>2.10.6</scala.version>
     <spark.version>1.6.1</spark.version>
+    <scala.version>2.10.6</scala.version>
+    <scala.tools.version>2.10</scala.tools.version>
   </properties>
 
   <dependencies>
@@ -43,11 +41,21 @@
       <version>${spark.version}</version>
       <scope>provided</scope>
     </dependency>
-    <!-- http://mvnrepository.com/artifact/org.apache.spark/spark-mllib_2.10 -->
+	<!-- http://mvnrepository.com/artifact/org.apache.spark/spark-mllib_2.10 -->
 	<dependency>
     	<groupId>org.apache.spark</groupId>
-    	<artifactId>spark-mllib_2.10</artifactId>
+    	<artifactId>spark-mllib_${scala.tools.version}</artifactId>
     	<version>${spark.version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.spark</groupId>
+	    <artifactId>spark-streaming_${scala.tools.version}</artifactId>
+	    <version>${spark.version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.spark</groupId>
+	    <artifactId>spark-streaming-twitter_${scala.tools.version}</artifactId>
+	    <version>${spark.version}</version>
 	</dependency>
     <!-- http://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 	<dependency>
@@ -56,20 +64,9 @@
     	<version>6.0.2</version>
 	</dependency>
 	<dependency>
-	    <groupId>org.apache.spark</groupId>
-	    <artifactId>spark-streaming_2.10</artifactId>
-	    <version>${spark.version}</version>
-	</dependency>
-	<dependency>
-	    <groupId>org.apache.spark</groupId>
-	    <artifactId>spark-streaming-twitter_2.10</artifactId>
-	    <version>${spark.version}</version>
-	</dependency>
-	<!-- http://mvnrepository.com/artifact/org.apache.spark/spark-mllib_2.10 -->
-	<dependency>
-    	<groupId>org.apache.spark</groupId>
-    	<artifactId>spark-mllib_2.10</artifactId>
-    	<version>${spark.version}</version>
+    	<groupId>gov.nist.math</groupId>
+    	<artifactId>jama</artifactId>
+    	<version>1.0.3</version>
 	</dependency>
 	
     
@@ -181,7 +178,29 @@
           </execution>
         </executions>
       </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.tavisbarr.hotandbothered.StreamOrchestrator</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>

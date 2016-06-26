@@ -29,14 +29,15 @@ object DatabaseWriter {
       }
     }
     println("Writing " + count + ", " + weather(0) + ", " + weather(1) + ", " + pred)
-    val query : String = "INSERT INTO record ( count , tempf , hour , prediction ) VALUES( ? , ? , ? , ?  )"
+    val query : String = "INSERT INTO record ( count , tempf , hour , dow , prediction ) VALUES( ? , ? , ? , ? , ? )"
     try {
       val st = con.prepareStatement(query)
       st.setLong(1, count)
       st.setDouble(2, weather(0))
       st.setDouble(3, weather(1))
+      st.setDouble(4, weather(2))
       if ( !pred.isNaN() && !pred.isInfinite() ) {
-      st.setDouble(4, pred)        
+      st.setDouble(5, pred)        
       }
       else {
         st.setObject(4,null)
@@ -90,9 +91,11 @@ object DatabaseWriter {
       if ( !tableExists ) {
         val st2 = con.prepareStatement("CREATE TABLE record (" +
 	        " count INT(10) , " + 
+	        " tempf DOUBLE , " + 
 	        " highf DOUBLE , " + 
 	        " lowf DOUBLE , " + 
 	        " hour DOUBLE , " + 
+	        " dow DOUBLE , " + 
 	        " prediction DOUBLE , " + 
 	        " updatetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)")
 	        st2.executeUpdate()
